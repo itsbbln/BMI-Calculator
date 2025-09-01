@@ -1,11 +1,11 @@
 package com.helloworld.quantum.bmicalculator;
 
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DecimalFormat;
 
@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         myButtonListenerMethod();
     }
 
@@ -24,26 +25,28 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final EditText heightText = findViewById(R.id.heightInput);
-                String heightStr = heightText.getText().toString();
-                double height = Double.parseDouble(heightStr);
+                EditText heightText = findViewById(R.id.heightInput);
+                EditText weightText = findViewById(R.id.weightInput);
 
-                final EditText weightText = findViewById(R.id.weightInput);
+                String heightStr = heightText.getText().toString();
                 String weightStr = weightText.getText().toString();
+
+                // Prevent crash if fields are empty
+                if (heightStr.isEmpty() || weightStr.isEmpty()) {
+                    return;
+                }
+
+                double height = Double.parseDouble(heightStr);
                 double weight = Double.parseDouble(weightStr);
 
-                // BMI calculation
                 double BMI = (weight) / (height * height);
 
-                // Round to 1 decimal
                 DecimalFormat df = new DecimalFormat("#.#");
                 double BMI_trimmed = Double.parseDouble(df.format(BMI));
 
-                // Display BMI
-                final TextView BMIResult = findViewById(R.id.BMIResult);
-                BMIResult.setText(String.valueOf(BMI_trimmed));
+                TextView BMIResult = findViewById(R.id.BMIResult); // use TextView for result
+                BMIResult.setText(Double.toString(BMI_trimmed));
 
-                // Determine category
                 String BMI_Cat;
                 if (BMI < 15)
                     BMI_Cat = "Very severely underweight";
@@ -62,8 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 else
                     BMI_Cat = "Obese Class 3 - Very Severely Obese";
 
-                // Show category
-                final TextView BMICategory = findViewById(R.id.BMICategory);
+                TextView BMICategory = findViewById(R.id.BMICategory);
                 BMICategory.setText(BMI_Cat);
             }
         });
